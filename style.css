@@ -1,0 +1,66 @@
+:root {
+    --light-green: rgb(57, 233, 57);
+    --dark-green: rgb(71, 163, 71);
+    --button-transition: rgb(94, 255, 0);
+}
+
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+/* Main sections */
+
+/* #logo {
+    height: 5px;
+    width: 5px;
+} */
+/* because i kept trying to change the height and width of the container i got that bug i should just change the height and width of the actual image instead */
+
+#notes-icon {
+    height: 80px;
+    width: 80px;
+}
+
+#upper-portion {
+    display: flex;
+
+}
+
+#left-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--dark-green);
+    /* padding: top right bottom left; */
+    padding: 4rem 10rem 10rem 10rem;
+    
+}
+
+.add-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 2rem 1rem 2rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-item:hover {
+    background-color: var(--button-transition);
+}
+
+.pic-container {
+    display: flex;
+    height: 20px;
+    width: 20px;
+}
+
+.add-item {
+    background-color: var(--light-green);
+}
