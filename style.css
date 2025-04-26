@@ -18,6 +18,13 @@
     width: 5px;
 } */
 /* because i kept trying to change the height and width of the container i got that bug i should just change the height and width of the actual image instead */
+button {
+    cursor: pointer;
+}
+
+.project-name {
+    cursor: pointer;
+}
 
 #notes-icon {
     height: 80px;
@@ -29,14 +36,20 @@
 
 }
 
+#logo {
+    padding-bottom: 3rem;
+}
+
 #left-side {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     background-color: var(--dark-green);
     /* padding: top right bottom left; */
-    padding: 4rem 10rem 10rem 10rem;
+    height: 100vh;
+    padding: 3rem 10rem 10rem 10rem;
+    
     
 }
 
@@ -63,4 +76,18 @@
 
 .add-item {
     background-color: var(--light-green);
+}
+
+.project {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--light-green);
+    padding:2rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
 }
