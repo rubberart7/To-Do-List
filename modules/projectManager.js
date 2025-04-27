@@ -16,8 +16,12 @@ const ProjectManager = (() => {
         console.log("LocalStorage after save:", localStorage.getItem('projects')); 
     }
 
-    function getJsonProjects() {
-        const storedProjects = localStorage.getItem('projects');
+    function getJsonVerOfProj() {
+        return localStorage.getItem('projects')
+    }
+
+    function getProjsFromLs() {
+        const storedProjects = getJsonVerOfProj();
         console.log("Retrieved from localStorage:", storedProjects); 
         if (storedProjects) {
             return JSON.parse(storedProjects);
@@ -32,7 +36,7 @@ const ProjectManager = (() => {
     }
 
     function loadProjects() {
-        const jsonProjects = getJsonProjects();
+        const jsonProjects = getProjsFromLs();
         console.log("Loaded projects from localStorage (jsonProjects):", jsonProjects); 
         if (jsonProjects.length === 0) {
             const defaultProject = createDefaultProject();
@@ -44,9 +48,28 @@ const ProjectManager = (() => {
         }
     }
 
+    function createNewProject(projectName) {
+        const newProject = new Project(projectName);
+        addProjectToArr(newProject);
+        addProjectToLs(projectsArr);
+    }
+
+    function getLastIndex() {
+        return projectsArr.length - 1;
+    }
+
+    function getLatestProject() {
+        return projectsArr[getLastIndex()];
+    }
+
     return {
         loadProjects,
-        getProjectsArr: () => projectsArr,
+        getJsonVerOfProj,
+        getProjectsArr: () => projectsArr, 
+        createNewProject,
+        getLastIndex, 
+        getLatestProject
+
     };
 })();
 
