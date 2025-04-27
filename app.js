@@ -1,3 +1,5 @@
-import { loadProjects } from "./modules/storage.js";
+import { ProjectManager } from './modules/projectManager.js';
 
-loadProjects();
+ProjectManager.loadProjects();
+
+
