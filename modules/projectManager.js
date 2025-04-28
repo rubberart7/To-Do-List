@@ -62,13 +62,25 @@ const ProjectManager = (() => {
         return projectsArr[getLastIndex()];
     }
 
+    function removeProject(index) {
+        if (index >= 0 && index < projectsArr.length) {
+            const removedProject = projectsArr.splice(index, 1);
+            projectsArr.splice(index, 1); 
+            console.log("Removed project:", removedProject);
+            addProjectToLs(projectsArr);  
+        } else {
+            console.error("Invalid index provided for project removal.");
+        }
+    }
+
     return {
         loadProjects,
         getJsonVerOfProj,
         getProjectsArr: () => projectsArr, 
         createNewProject,
         getLastIndex, 
-        getLatestProject
+        getLatestProject, 
+        removeProject
 
     };
 })();

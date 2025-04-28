@@ -28,7 +28,7 @@ function createProjectCard(project, index) {
     const trashIconDiv = document.createElement('div');
     const trashIcon = document.createElement("img");
     trashIcon.classList.add('pic-container');
-    trashIcon.id = 'trash-icon';
+    trashIcon.id = 'trash-icon-project';
     trashIcon.src = './images/trash_can_icon.png';
     trashIcon.alt = 'trash can icon';
     trashIconDiv.appendChild(trashIcon);

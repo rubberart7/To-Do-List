@@ -2,55 +2,71 @@ import { getInputField, showInputField, hideInputField, createProjectCard } from
 import { ProjectManager } from './modules/projectManager.js';
 
 const addProjectButton = document.getElementById('add_project');
+
 let inputFieldVisible = false;
+let inputField;
+
+function renderAllProjects() {
+    const projects = ProjectManager.getProjectsArr();
+    projects.forEach((project, index) => {
+        createProjectCard(project, index);
+    });
+}
 
 function initializeApp() {
     ProjectManager.loadProjects();
-    const projects = ProjectManager.getProjectsArr();
-    projects.forEach(project => {
-        createProjectCard(project);
-    });
+    renderAllProjects();
+}
+
+function createAndShowInputField() {
+    inputField = getInputField();
+    showInputField(inputField);
+    inputField.focus();
+    inputFieldVisible = true;
+
+    inputField.addEventListener('keypress', handleInputEnter);
+}
+
+function handleInputEnter(event) {
+    if (event.key !== 'Enter') return;
+
+    const projectName = inputField.value.trim();
+    if (!projectName) {
+        console.error("Project name is required!");
+        return;
+    }
+
+    ProjectManager.createNewProject(projectName);
+    const index = ProjectManager.getLastIndex();
+    const newProject = ProjectManager.getLatestProject();
+
+    createProjectCard(newProject, index);
+
+    hideInputField(inputField);
+    inputFieldVisible = false;
+    inputField.removeEventListener('keypress', handleInputEnter);
+    inputField = null;
 }
 
 function handleAddProjectClick() {
-
-    const inputField = getInputField();
-
-    showInputField(inputField);
-    inputFieldVisible = !inputFieldVisible;
-
-    inputField.addEventListener('keypress', function (event) {
-        if (event.key === 'Enter') {
-            const projectName = inputField.value.trim();
-            if (projectName) {
-                ProjectManager.createNewProject(projectName);
-                const index = ProjectManager.getLastIndex();
-                const newProject = ProjectManager.getLatestProject();
-
-                createProjectCard(newProject, index);
-
-                hideInputField(inputField);
-
-                inputFieldVisible = false;
-            } else {
-                console.error("Project name is required!");
-            }
-        }
-
-    });
+    if (inputFieldVisible) {
+        console.error("Input is already visible!");
+        return;
+    }
+    createAndShowInputField();
 }
 
-// function handleRemoveProjectClick() {
-
-// }
 
 initializeApp();
 
-addProjectButton.addEventListener('click', () => {
-    if (inputFieldVisible === false) {
-        handleAddProjectClick();
-        inputFieldVisible = true;
-    } else {
-        console.error("Input is already there!")
+addProjectButton.addEventListener('click', handleAddProjectClick);
+
+document.getElementById('projects-container').addEventListener('click', function(event) {
+    if (event.target && event.target.id === 'trash-icon-project') {
+        const projectDiv = event.target.closest('.project');
+        const index = Array.from(document.querySelectorAll('.project')).indexOf(projectDiv);
+        ProjectManager.removeProject(index);
+        renderAllProjects();
     }
 });
+
