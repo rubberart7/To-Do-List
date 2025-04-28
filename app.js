@@ -4,6 +4,14 @@ import { ProjectManager } from './modules/projectManager.js';
 const addProjectButton = document.getElementById('add_project');
 let inputFieldVisible = false;
 
+function initializeApp() {
+    ProjectManager.loadProjects();
+    const projects = ProjectManager.getProjectsArr();
+    projects.forEach(project => {
+        createProjectCard(project);
+    });
+}
+
 function handleAddProjectClick() {
 
     const inputField = getInputField();
@@ -30,8 +38,13 @@ function handleAddProjectClick() {
         }
 
     });
-
 }
+
+// function handleRemoveProjectClick() {
+
+// }
+
+initializeApp();
 
 addProjectButton.addEventListener('click', () => {
     if (inputFieldVisible === false) {

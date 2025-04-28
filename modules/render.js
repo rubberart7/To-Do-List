@@ -24,9 +24,17 @@ function createProjectCard(project, index) {
     projectCard.setAttribute('data-index', index);
     
     const projectName = document.createElement('p');
-    projectName.textContent = project.name;  
+    projectName.textContent = project.name;
+    const trashIconDiv = document.createElement('div');
+    const trashIcon = document.createElement("img");
+    trashIcon.classList.add('pic-container');
+    trashIcon.id = 'trash-icon';
+    trashIcon.src = './images/trash_can_icon.png';
+    trashIcon.alt = 'trash can icon';
+    trashIconDiv.appendChild(trashIcon);
 
-    projectCard.appendChild(projectName);  
+    projectCard.appendChild(projectName); 
+    projectCard.appendChild(trashIconDiv);
 
     projectContainer.appendChild(projectCard); 
 }

@@ -95,3 +95,7 @@ button {
     font-weight: bold;
     color: black;
 }
+
+#trash-icon {
+    cursor: pointer;
+}
