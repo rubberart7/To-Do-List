@@ -2,35 +2,42 @@ import { getInputField, showInputField, hideInputField, createProjectCard } from
 import { ProjectManager } from './modules/projectManager.js';
 
 const addProjectButton = document.getElementById('add_project');
-let inputField = null;
+let inputFieldVisible = false;
 
-// Function to handle the 'Add Project' button click
 function handleAddProjectClick() {
-    // Step 1: Get the input field
-    inputField = getInputField();
 
-    // Step 2: Show the input field in the UI
+    const inputField = getInputField();
+
     showInputField(inputField);
+    inputFieldVisible = !inputFieldVisible;
 
-    // Step 3: Add event listener to the input field for 'Enter' key
     inputField.addEventListener('keypress', function (event) {
         if (event.key === 'Enter') {
             const projectName = inputField.value.trim();
             if (projectName) {
-                // Step 4: Create the project and add it to the ProjectManager
                 ProjectManager.createNewProject(projectName);
                 const index = ProjectManager.getLastIndex();
                 const newProject = ProjectManager.getLatestProject();
 
-                // Step 5: Render the new project card
                 createProjectCard(newProject, index);
 
-                // Step 6: Hide the input field after the project is created
                 hideInputField(inputField);
+
+                inputFieldVisible = false;
+            } else {
+                console.error("Project name is required!");
             }
         }
+
     });
+
 }
 
-// Set up event listener for the 'Add Project' button
-addProjectButton.addEventListener('click', handleAddProjectClick);
+addProjectButton.addEventListener('click', () => {
+    if (inputFieldVisible === false) {
+        handleAddProjectClick();
+        inputFieldVisible = true;
+    } else {
+        console.error("Input is already there!")
+    }
+});

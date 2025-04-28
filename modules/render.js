@@ -1,4 +1,3 @@
-// Function to create the input field element
 function getInputField() {
     const inputField = document.createElement('input');
     inputField.setAttribute('type', 'text');
@@ -7,19 +6,16 @@ function getInputField() {
     return inputField;
 }
 
-// Function to show the input field on the screen
 function showInputField(inputField) {
     const container = document.getElementById('projects-container');
-    container.appendChild(inputField);  // Append the input field to the container
-    inputField.focus();  // Optionally, set focus on the input field for immediate typing
+    container.appendChild(inputField);  
+    inputField.focus();  
 }
 
-// Function to hide the input field after the project is created
 function hideInputField(inputField) {
-    inputField.remove();  // Remove the input field from the DOM
+    inputField.remove();  
 }
 
-// Function to create and render the project card
 function createProjectCard(project, index) {
     const projectContainer = document.getElementById('projects-container');  
 
@@ -27,7 +23,7 @@ function createProjectCard(project, index) {
     projectCard.classList.add('project');  
     projectCard.setAttribute('data-index', index);
     
-    const projectName = document.createElement('h3');
+    const projectName = document.createElement('p');
     projectName.textContent = project.name;  
 
     projectCard.appendChild(projectName);  
