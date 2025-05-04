@@ -96,6 +96,6 @@ button {
     color: black;
 }
 
-#trash-icon-project {
+.trash-icon-project {
     cursor: pointer;
 }
