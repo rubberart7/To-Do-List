@@ -62,10 +62,13 @@ initializeApp();
 addProjectButton.addEventListener('click', handleAddProjectClick);
 
 document.getElementById('projects-container').addEventListener('click', function(event) {
-    if (event.target && event.target.id === 'trash-icon-project') {
+    if (event.target && event.target.classList.contains('trash-icon-project')) {
+        console.log("Trash can icon has been selected.");
         const projectDiv = event.target.closest('.project');
         const index = Array.from(document.querySelectorAll('.project')).indexOf(projectDiv);
         ProjectManager.removeProject(index);
+        
+        document.getElementById('projects-container').innerHTML = '';
         renderAllProjects();
     }
 });
