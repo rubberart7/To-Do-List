@@ -27,17 +27,7 @@ class Project {
         return this.tasks;
     }
 
-    static fromJSON(data) {
-        const project = new Project(data.name);
-        project.tasks = data.tasks.map(task => new Task(
-            task.title,
-            task.description,
-            task.dueDate,
-            task.priority,
-            task.status
-        ));
-        return project;
-    }
+    
 }
 
 export default Project;
