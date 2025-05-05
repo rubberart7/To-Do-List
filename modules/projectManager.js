@@ -72,6 +72,27 @@ const ProjectManager = (() => {
         }
     }
 
+    function addTaskToProject(projectIndex, title, description, dueDate, priority, status = 'Incomplete') {
+        const project = projectsArr[projectIndex];
+        if (!project) {
+            console.error("Invalid project index.");
+            return;
+        }
+    
+        project.addTask(title, description, dueDate, priority, status);
+        console.log(`Task "${title}" added to project "${project.name}".`);
+        addProjectToLs(projectsArr);
+    }
+
+    function getProjectTasks(projectIndex) {
+        const project = projectsArr[projectIndex];
+        if (!project) {
+            console.error("Invalid project index.");
+            return [];
+        }
+        return project.getTaskArr();
+    }
+
     return {
         loadProjects,
         getJsonVerOfProj,
@@ -79,8 +100,9 @@ const ProjectManager = (() => {
         createNewProject,
         getLastIndex, 
         getLatestProject, 
-        removeProject
-
+        removeProject,
+        addTaskToProject,
+        getProjectTasks
     };
 })();
 

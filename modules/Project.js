@@ -18,6 +18,10 @@ class Project {
     getTask(taskTitle) {
         return this.tasks.find(task => task.title === taskTitle);
     }
+
+    getTaskArr() {
+        return this.tasks;
+    }
 }
 
 export default Project;
