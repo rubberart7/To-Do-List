@@ -66,7 +66,7 @@ function createRightSide(project) {
     header.appendChild(addTaskBtn);
     
     const tasksContainer = document.createElement('div');
-    tasksContainer.className = 'tasks-container';
+    tasksContainer.id = 'tasks-container';
     
     rightSide.appendChild(header);
     rightSide.appendChild(tasksContainer);
@@ -99,7 +99,7 @@ function createTaskCard(task, index) {
     actions.className = 'task-actions';
     
     const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
+    deleteBtn.className = 'delete-task-btn';
     deleteBtn.textContent = 'Delete';
     
     taskCard.append(title, description, dueDate, priority, status, actions);

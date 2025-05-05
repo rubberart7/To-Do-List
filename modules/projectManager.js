@@ -3,106 +3,158 @@ import Project from './Project.js';
 const ProjectManager = (() => {
     let projectsArr = [];
 
+    // Creates the default project with sample task
     function createDefaultProject() {
         const newProject = new Project("Default Project");
-        newProject.addTask("Simple Task 1", "This is the default description.", "04/27/25", "High");
-        console.log("Default project created:", newProject); 
+        newProject.addTask("Sample Task", "This is a default task", "2023-12-31", "Medium");
+        console.log("Default project created:", newProject);
         return newProject;
     }
 
-    function addProjectToLs(projectsArr) {
-        console.log("Saving to localStorage:", JSON.stringify(projectsArr)); 
-        localStorage.setItem('projects', JSON.stringify(projectsArr));
-        console.log("LocalStorage after save:", localStorage.getItem('projects')); 
+    // Saves projects to localStorage
+    function addProjectToLs() {
+        const serialized = JSON.stringify(projectsArr);
+        localStorage.setItem('projects', serialized);
+        console.log("Projects saved to localStorage:", serialized);
     }
 
+    // Gets raw JSON from localStorage
     function getJsonVerOfProj() {
-        return localStorage.getItem('projects')
+        return localStorage.getItem('projects');
     }
 
+    // Loads and converts projects from localStorage
     function getProjsFromLs() {
         const storedProjects = getJsonVerOfProj();
-        console.log("Retrieved from localStorage:", storedProjects); 
         if (storedProjects) {
-            return JSON.parse(storedProjects);
+            try {
+                const parsed = JSON.parse(storedProjects);
+                return parsed.map(projectData => {
+                    const project = new Project(projectData.name);
+                    project.tasks = projectData.tasks || [];
+                    return project;
+                });
+            } catch (e) {
+                console.error("Error parsing stored projects:", e);
+                return [];
+            }
         }
         return [];
     }
 
-    function addProjectToArr(newProject) {
-        projectsArr.push(newProject);
-        console.log("Project added to projectsArr:", newProject); 
-        console.log("Current projectsArr:", projectsArr); 
-    }
-
-    function loadProjects() {
-        const jsonProjects = getProjsFromLs();
-        console.log("Loaded projects from localStorage (jsonProjects):", jsonProjects); 
-        if (jsonProjects.length === 0) {
-            const defaultProject = createDefaultProject();
-            addProjectToArr(defaultProject);
-            addProjectToLs(projectsArr);
-        } else {
-            projectsArr = jsonProjects;
-            console.log("projectsArr loaded from localStorage:", projectsArr); 
+    // Adds a project (handles both instances and plain objects)
+    function addProjectToArr(projectData) {
+        const project = projectData instanceof Project 
+            ? projectData 
+            : new Project(projectData.name);
+        
+        if (projectData.tasks) {
+            project.tasks = projectData.tasks;
         }
+        
+        projectsArr.push(project);
+        console.log("Added project:", project);
+        return project;
     }
 
+    // Initial load of projects
+    function loadProjects() {
+        const storedProjects = getProjsFromLs();
+        projectsArr = [];
+        
+        if (storedProjects.length > 0) {
+            storedProjects.forEach(project => {
+                addProjectToArr(project);
+            });
+        } else {
+            addProjectToArr(createDefaultProject());
+        }
+        addProjectToLs();
+    }
+
+    // Creates new project
     function createNewProject(projectName) {
-        const newProject = new Project(projectName);
-        addProjectToArr(newProject);
-        addProjectToLs(projectsArr);
+        const project = new Project(projectName);
+        addProjectToArr(project);
+        addProjectToLs();
+        return project;
     }
 
+    // Gets last project index
     function getLastIndex() {
         return projectsArr.length - 1;
     }
 
+    // Gets most recent project
     function getLatestProject() {
         return projectsArr[getLastIndex()];
     }
 
+    // Removes a project
     function removeProject(index) {
         if (index >= 0 && index < projectsArr.length) {
-            const removedProject = projectsArr.splice(index, 1);
-            console.log("Removed project:", removedProject);
-            addProjectToLs(projectsArr);  
-        } else {
-            console.error("Invalid index provided for project removal.");
+            projectsArr.splice(index, 1);
+            addProjectToLs();
+            return true;
         }
+        console.error("Invalid project index:", index);
+        return false;
     }
 
+    // Adds task to project
     function addTaskToProject(projectIndex, title, description, dueDate, priority, status = 'Incomplete') {
-        const project = projectsArr[projectIndex];
-        if (!project) {
-            console.error("Invalid project index.");
-            return;
+        if (projectIndex < 0 || projectIndex >= projectsArr.length) {
+            console.error("Invalid project index:", projectIndex);
+            return false;
         }
-    
+        
+        const project = projectsArr[projectIndex];
         project.addTask(title, description, dueDate, priority, status);
-        console.log(`Task "${title}" added to project "${project.name}".`);
-        addProjectToLs(projectsArr);
+        addProjectToLs();
+        return true;
     }
 
+    // Gets tasks for a project
     function getProjectTasks(projectIndex) {
-        const project = projectsArr[projectIndex];
-        if (!project) {
-            console.error("Invalid project index.");
+        if (projectIndex < 0 || projectIndex >= projectsArr.length) {
+            console.error("Invalid project index:", projectIndex);
             return [];
         }
-        return project.getTaskArr();
+        return projectsArr[projectIndex].getTaskArr();
+    }
+
+    // Removes task from project - FIXED VERSION
+    function removeTask(projectIndex, taskIndex) {
+        if (projectIndex < 0 || projectIndex >= projectsArr.length) {
+            console.error("Invalid project index:", projectIndex);
+            return false;
+        }
+        
+        const project = projectsArr[projectIndex];
+        
+        // Directly modify the tasks array instead of relying on removeTask
+        if (taskIndex >= 0 && taskIndex < project.tasks.length) {
+            project.tasks.splice(taskIndex, 1);
+            addProjectToLs(); // CRUCIAL: Save to localStorage immediately
+            return true;
+        }
+        
+        console.error("Invalid task index:", taskIndex);
+        return false;
     }
 
     return {
         loadProjects,
-        getJsonVerOfProj,
-        getProjectsArr: () => projectsArr, 
+        getProjectsArr: () => projectsArr,
         createNewProject,
-        getLastIndex, 
-        getLatestProject, 
+        getLastIndex,
+        getLatestProject,
         removeProject,
         addTaskToProject,
-        getProjectTasks
+        getProjectTasks,
+        removeTask,
+        addProjectToLs,
+        getJsonVerOfProj
     };
 })();
 
