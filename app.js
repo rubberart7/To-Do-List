@@ -104,7 +104,7 @@ function setUpDeleteProjectListener() {
             ProjectManager.removeProject(index);
             renderAllProjects();
             
-            // Reset active project if needed
+            // Reset active project if the current active project is deleted
             if (activeProjectIndex >= ProjectManager.getProjectsArr().length) {
                 activeProjectIndex = ProjectManager.getProjectsArr().length - 1;
                 if (ProjectManager.getProjectsArr().length > 0) {
@@ -166,7 +166,7 @@ function setUpAddTaskForm() {
             if (existingForm) existingForm.remove();
             
             // Create and show new form
-            const form = createTaskForm(activeProjectIndex);
+            const form = createTaskForm();
             tasksContainer.prepend(form);
             
             // Handle form submission

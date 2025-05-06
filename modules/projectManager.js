@@ -31,7 +31,7 @@ const ProjectManager = (() => {
                 const parsed = JSON.parse(storedProjects);
                 return parsed.map(projectData => {
                     const project = new Project(projectData.name);
-                    project.tasks = projectData.tasks || [];
+                    project._tasks = projectData.tasks || [];
                     return project;
                 });
             } catch (e) {
@@ -49,7 +49,7 @@ const ProjectManager = (() => {
             : new Project(projectData.name);
         
         if (projectData.tasks) {
-            project.tasks = projectData.tasks;
+            project._tasks = projectData.tasks;
         }
         
         projectsArr.push(project);
@@ -137,6 +137,21 @@ const ProjectManager = (() => {
         console.error("Invalid task index:", taskIndex);
     }
 
+    function updateTask(projectIndex, taskIndex, updatedTaskData) {
+        try {
+            const project = projectsArr[projectIndex];
+            if (!project) throw new Error('Project not found');
+            
+            const success = project.updateTask(taskIndex, updatedTaskData);
+            if (success) addProjectToLs();
+            return;
+        } catch (error) {
+            console.error('Update failed:', error.message);
+            return;
+        }
+    }
+
+
     return {
         loadProjects,
         getProjectsArr: () => projectsArr,
@@ -148,7 +163,8 @@ const ProjectManager = (() => {
         getProjectTasks,
         removeTask,
         addProjectToLs,
-        getJsonVerOfProj
+        getJsonVerOfProj,
+        updateTask
     };
 })();
 

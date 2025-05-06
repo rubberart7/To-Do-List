@@ -130,7 +130,7 @@ function createTaskCard(task, index) {
     return taskCard;
 }
 
-function createTaskForm(projectIndex) {
+function createTaskForm() {
     const form = document.createElement('div');
     form.className = 'task-form-container';
     
