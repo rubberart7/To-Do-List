@@ -1,36 +1,36 @@
 class Task {
     constructor(title, description, dueDate, priority, status = 'Incomplete') {
-        this._title = title;
-        this._description = description;
-        this._dueDate = dueDate;
-        this._priority = priority;
-        this._status = status;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.status = status;
     }
 
     // Getters
-    get title() { return this._title; }
-    get description() { return this._description; }
-    get dueDate() { return this._dueDate; }
-    get priority() { return this._priority; }
-    get status() { return this._status; }
+    get title() { return this.title; }
+    get description() { return this.description; }
+    get dueDate() { return this.dueDate; }
+    get priority() { return this.priority; }
+    get status() { return this.status; }
 
     // Setters with basic validation
     set title(value) {
         if (typeof value !== 'string' || value.trim() === '') {
             throw new Error('Title must be a non-empty string');
         }
-        this._title = value.trim();
+        this.title = value.trim();
     }
 
     set description(value) {
-        this._description = String(value); // Convert to string but allow empty
+        this.description = String(value); // Convert to string but allow empty
     }
 
     set dueDate(value) {
         if (value && isNaN(Date.parse(value))) {
             throw new Error('Invalid date format');
         }
-        this._dueDate = value || null;
+        this.dueDate = value || null;
     }
 
     set priority(value) {
@@ -38,14 +38,14 @@ class Task {
         if (!validPriorities.includes(value)) {
             throw new Error('Invalid priority value');
         }
-        this._priority = value;
+        this.priority = value;
     }
 
     set status(value) {
         if (value !== 'Complete' && value !== 'Incomplete') {
             throw new Error('Status must be "Complete" or "Incomplete"');
         }
-        this._status = value;
+        this.status = value;
     }
 
     // Update method using setters

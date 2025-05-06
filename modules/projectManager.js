@@ -31,7 +31,7 @@ const ProjectManager = (() => {
                 const parsed = JSON.parse(storedProjects);
                 return parsed.map(projectData => {
                     const project = new Project(projectData.name);
-                    project._tasks = projectData.tasks || [];
+                    project.tasks = projectData.tasks || [];
                     return project;
                 });
             } catch (e) {
@@ -49,7 +49,7 @@ const ProjectManager = (() => {
             : new Project(projectData.name);
         
         if (projectData.tasks) {
-            project._tasks = projectData.tasks;
+            project.tasks = projectData.tasks;
         }
         
         projectsArr.push(project);
@@ -95,19 +95,23 @@ const ProjectManager = (() => {
         if (index >= 0 && index < projectsArr.length) {
             projectsArr.splice(index, 1);
             addProjectToLs();
+            return true;
         }
         console.error("Invalid project index:", index);
+        return false;
     }
 
     // Adds task to project
     function addTaskToProject(projectIndex, title, description, dueDate, priority, status = 'Incomplete') {
         if (projectIndex < 0 || projectIndex >= projectsArr.length) {
             console.error("Invalid project index:", projectIndex);
+            return false;
         }
         
         const project = projectsArr[projectIndex];
         project.addTask(title, description, dueDate, priority, status);
         addProjectToLs();
+        return true;
     }
 
     // Gets tasks for a project
@@ -132,9 +136,11 @@ const ProjectManager = (() => {
         if (taskIndex >= 0 && taskIndex < project.tasks.length) {
             project.tasks.splice(taskIndex, 1);
             addProjectToLs(); // CRUCIAL: Save to localStorage immediately
+            return true;
         }
         
         console.error("Invalid task index:", taskIndex);
+        return false;
     }
 
     function updateTask(projectIndex, taskIndex, updatedTaskData) {
