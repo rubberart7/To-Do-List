@@ -4,8 +4,7 @@ import {
     hideInputField, 
     createProjectCard, 
     createRightSide,
-    createTaskCard,
-    createTaskForm 
+    createTaskCard 
 } from './modules/render.js';
 import { ProjectManager } from './modules/projectManager.js';
 
@@ -76,7 +75,6 @@ function renderTasks(projectIndex) {
     
     const project = projects[projectIndex];
     const tasksContainer = createRightSide(project); 
-    tasksContainer.innerHTML = ''; // Only clear tasks, not the whole right side
     
     if (!project.tasks || project.tasks.length === 0) {
         tasksContainer.innerHTML = '<p>No tasks yet. Add a task to get started!</p>';
@@ -100,13 +98,12 @@ function setUpDeleteProjectListener() {
             const projectDiv = event.target.closest('.project');
             const index = Array.from(document.querySelectorAll('.project')).indexOf(projectDiv);
             
-            
             ProjectManager.removeProject(index);
             renderAllProjects();
             
             // Reset active project if the current active project is deleted
             if (activeProjectIndex >= ProjectManager.getProjectsArr().length) {
-                activeProjectIndex = ProjectManager.getProjectsArr().length - 1;
+                activeProjectIndex = Math.max(0, ProjectManager.getProjectsArr().length - 1);
                 if (ProjectManager.getProjectsArr().length > 0) {
                     document.querySelector('.project')?.classList.add('active');
                     renderTasks(activeProjectIndex);
@@ -155,62 +152,6 @@ function setUpDeleteTaskListener() {
     });
 }
 
-function setUpAddTaskForm() {
-    document.addEventListener('click', function(event) {
-        // Use event delegation for dynamically created elements
-        if (event.target.closest('#add_task')) {
-            const tasksContainer = document.getElementById('tasks-container');
-            
-            // Remove any existing form
-            const existingForm = document.querySelector('.task-form-container');
-            if (existingForm) existingForm.remove();
-            
-            // Create and show new form
-            const form = createTaskForm();
-            tasksContainer.prepend(form);
-            
-            // Handle form submission
-            const taskForm = form.querySelector('.task-form');
-            taskForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                saveNewTask(activeProjectIndex);
-            });
-            
-            // Handle cancel
-            const cancelBtn = form.querySelector('.cancel-task-btn');
-            cancelBtn.addEventListener('click', () => {
-                form.remove();
-            });
-        }
-    });
-}
-
-function saveNewTask(projectIndex) {
-    const form = document.querySelector('.task-form');
-    
-    const taskData = {
-        title: form.querySelector('#task-name').value,
-        description: form.querySelector('#task-description').value,
-        dueDate: form.querySelector('#task-due-date').value,
-        priority: form.querySelector('#task-priority').value,
-        status: form.querySelector('#task-status').checked ? 'Complete' : 'Incomplete'
-    };
-    
-    // Add task to project
-    ProjectManager.addTaskToProject(
-        projectIndex,
-        taskData.title,
-        taskData.description,
-        taskData.dueDate,
-        taskData.priority,
-        taskData.status
-    );
-    
-    // Refresh tasks display
-    form.remove();
-    renderTasks(projectIndex);
-}
-
 // INITIALIZATION
 function initializeApp() {
     ProjectManager.loadProjects();
@@ -226,8 +167,6 @@ function initializeApp() {
     if (ProjectManager.getProjectsArr().length > 0) {
         renderTasks(0);
     }
-
-    setUpAddTaskForm();
 }
 
 initializeApp();
