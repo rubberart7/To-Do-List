@@ -104,6 +104,17 @@ function createTaskCard(task, index) {
     
     const actions = document.createElement('div');
     actions.className = 'task-actions';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'edit-btn';
+    editBtn.title = 'Edit Task'; // Accessibility improvement
+    
+    const editIcon = document.createElement('img');
+    editIcon.src = './images/settings_icon.png';
+    editIcon.alt = 'Edit Task';
+    editIcon.className = 'pic-container';
+    
+    editBtn.appendChild(editIcon);
     
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-task-btn';
@@ -111,6 +122,7 @@ function createTaskCard(task, index) {
     
     taskCard.append(title, description, dueDate, priority, status, actions);
     actions.appendChild(deleteBtn);
+    actions.appendChild(editBtn);
     return taskCard;
 }
 

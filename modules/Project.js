@@ -19,12 +19,15 @@ class Project {
         }
     }
 
-    getTask(taskTitle) {
-        return this.tasks.find(task => task.title === taskTitle); // Changed to use property
-    }
 
     getTaskArr() {
         return this.tasks;
+    }
+
+    updateTask(taskIndex, updatedData) {
+        if (taskIndex >= 0 && taskIndex < this.tasks.length) {
+            this.tasks[taskIndex].update(updatedFields); // Delegates to Task.js
+        }
     }
 
     static fromJSON(data) {
