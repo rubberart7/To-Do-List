@@ -42,36 +42,43 @@ function createProjectCard(project, index) {
 
 function createRightSide(project) {
     const rightSide = document.getElementById('right-side');
-    rightSide.innerHTML = ''; 
-
-    const header = document.createElement('div');
-    header.className = 'right-side-header';
+    rightSide.innerHTML = ''; // Always clear and rebuild
+    // Only recreate if structure doesn't exist
+    if (!rightSide.querySelector('.right-side-header')) {
+        rightSide.innerHTML = '';
+        
+        const header = document.createElement('div');
+        header.className = 'right-side-header';
+        
+        const projectName = document.createElement('h2');
+        projectName.textContent = project.name;
+        
+        const addTaskBtn = document.createElement('button');
+        addTaskBtn.className = 'add-item';
+        addTaskBtn.id = 'add_task';
+        
+        const addIcon = document.createElement('img');
+        addIcon.src = './images/add_icon.png';
+        addIcon.alt = 'Add Task';
+        addIcon.className = 'pic-container';
+        
+        addTaskBtn.appendChild(addIcon);
+        addTaskBtn.appendChild(document.createTextNode(' Add Task'));
+        
+        header.appendChild(projectName);
+        header.appendChild(addTaskBtn);
+        
+        const tasksContainer = document.createElement('div');
+        tasksContainer.id = 'tasks-container';
+        
+        rightSide.appendChild(header);
+        rightSide.appendChild(tasksContainer);
+    } else {
+        // Just update the project name
+        rightSide.querySelector('h2').textContent = project.name;
+    }
     
-    const projectName = document.createElement('h2');
-    projectName.textContent = project.name;
-    
-    const addTaskBtn = document.createElement('button');
-    addTaskBtn.className = 'add-item';
-    addTaskBtn.id = 'add_task';
-    
-    const addIcon = document.createElement('img');
-    addIcon.src = './images/add_icon.png';
-    addIcon.alt = 'Add Task';
-    addIcon.className = 'pic-container';
-    
-    addTaskBtn.appendChild(addIcon);
-    addTaskBtn.appendChild(document.createTextNode(' Add Task'));
-    
-    header.appendChild(projectName);
-    header.appendChild(addTaskBtn);
-    
-    const tasksContainer = document.createElement('div');
-    tasksContainer.id = 'tasks-container';
-    
-    rightSide.appendChild(header);
-    rightSide.appendChild(tasksContainer);
-    
-    return tasksContainer; 
+    return document.getElementById('tasks-container');
 }
 
 function createTaskCard(task, index) {
@@ -107,11 +114,61 @@ function createTaskCard(task, index) {
     return taskCard;
 }
 
+function createTaskForm(projectIndex) {
+    const form = document.createElement('div');
+    form.className = 'task-form-container';
+    
+    form.innerHTML = `
+        <form class="task-form">
+            <div class="form-group">
+                <label for="task-name">Task Name</label>
+                <input type="text" id="task-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="task-description">Description</label>
+                <textarea id="task-description" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="task-due-date">Due Date</label>
+                <input type="date" id="task-due-date" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Priority</label>
+                <select id="task-priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            
+            <div class="form-group toggle-group">
+                <label>Status</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="task-status">
+                    <span class="slider"></span>
+                    <span class="labels" data-on="Complete" data-off="Incomplete"></span>
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="save-task-btn">Save Task</button>
+                <button type="button" class="cancel-task-btn">Cancel</button>
+            </div>
+        </form>
+    `;
+    
+    return form;
+}
+
 export { 
     getInputField, 
     showInputField, 
     hideInputField, 
     createProjectCard, 
     createRightSide,
-    createTaskCard
+    createTaskCard,
+    createTaskForm
 };

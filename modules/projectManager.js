@@ -101,17 +101,21 @@ const ProjectManager = (() => {
         return false;
     }
 
-    // Adds task to project
     function addTaskToProject(projectIndex, title, description, dueDate, priority, status = 'Incomplete') {
         if (projectIndex < 0 || projectIndex >= projectsArr.length) {
             console.error("Invalid project index:", projectIndex);
             return false;
         }
         
-        const project = projectsArr[projectIndex];
-        project.addTask(title, description, dueDate, priority, status);
-        addProjectToLs();
-        return true;
+        try {
+            const project = projectsArr[projectIndex];
+            project.addTask(title, description, dueDate, priority, status);
+            addProjectToLs();
+            return true;
+        } catch (error) {
+            console.error("Failed to add task:", error);
+            return false;
+        }
     }
 
     // Gets tasks for a project
@@ -131,16 +135,14 @@ const ProjectManager = (() => {
         }
         
         const project = projectsArr[projectIndex];
-        
-        // Directly modify the tasks array instead of relying on removeTask
-        if (taskIndex >= 0 && taskIndex < project.tasks.length) {
-            project.tasks.splice(taskIndex, 1);
-            addProjectToLs(); // CRUCIAL: Save to localStorage immediately
-            return true;
+        if (taskIndex < 0 || taskIndex >= project.tasks.length) {
+            console.error("Invalid task index:", taskIndex);
+            return false;
         }
-        
-        console.error("Invalid task index:", taskIndex);
-        return false;
+    
+        project.tasks.splice(taskIndex, 1);
+        addProjectToLs();
+        return true;
     }
 
     function updateTask(projectIndex, taskIndex, updatedTaskData) {
