@@ -1,10 +1,10 @@
 import { 
-    getInputField, 
-    showInputField, 
-    hideInputField, 
-    createProjectCard, 
-    createRightSide,
-    createTaskCard, createTaskForm
+getInputField, 
+showInputField, 
+hideInputField, 
+createProjectCard, 
+createRightSide,
+createTaskCard, createTaskForm
 } from './modules/render.js';
 import { ProjectManager } from './modules/projectManager.js';
 
@@ -131,7 +131,6 @@ function switchProjectListener() {
 }
 
 function setUpDeleteTaskListener() {
-    // Use event delegation for dynamic elements
     document.getElementById('right-side').addEventListener('click', (event) => {
         const deleteBtn = event.target.closest('.delete-task-btn');
         if (!deleteBtn) return;
@@ -154,7 +153,7 @@ function setUpDeleteTaskListener() {
 }
 
 function setUpAddTaskForm() {
-    // Use event delegation for dynamic elements
+// Use event delegation for dynamic elements
     document.getElementById('right-side').addEventListener('click', (event) => {
         if (event.target.closest('#add_task')) {
             const activeProject = document.querySelector('.project.active');
@@ -216,17 +215,89 @@ function saveNewTask(projectIndex) {
     }
 }
 
+function saveEditedTask(projectIndex, taskIndex) {
+    const form = document.querySelector('.task-form');
+    if (!form) return;
+
+    const updatedData = {
+        title: form.querySelector('#task-name').value.trim(),
+        description: form.querySelector('#task-description').value.trim(),
+        dueDate: form.querySelector('#task-due-date').value,
+        priority: form.querySelector('#task-priority').value,
+        status: form.querySelector('#task-status').checked ? 'Complete' : 'Incomplete'
+    };
+
+    // Use your existing ProjectManager.updateTask()
+    console.log("Going to update the task now!");
+    const success = ProjectManager.updateTask(projectIndex, taskIndex, updatedData);
+    if (success) {
+        console.log("Returns a true statement!");
+        form.closest('.task-form-container').remove();
+        renderTasks(projectIndex); 
+    }
+}
+
+function showEditForm(projectIndex, taskIndex, taskData) {
+    // Remove any existing forms
+    const existingForm = document.querySelector('.task-form-container');
+    if (existingForm) existingForm.remove();
+
+    // Create the form (reuse your existing `createTaskForm()`)
+    const form = createTaskForm(projectIndex);
+    document.getElementById('tasks-container').prepend(form);
+
+    // Pre-fill form fields
+    const formEl = form.querySelector('.task-form');
+    formEl.querySelector('#task-name').value = taskData.title;
+    formEl.querySelector('#task-description').value = taskData.description;
+    formEl.querySelector('#task-due-date').value = taskData.dueDate;
+    formEl.querySelector('#task-priority').value = taskData.priority;
+    formEl.querySelector('#task-status').checked = taskData.status === 'Complete';
+
+    console.log("Edit form has now appeared")
+
+    // Update form submit handler for editing (not creating)
+    formEl.onsubmit = (e) => {
+        e.preventDefault();
+        console.log("Going to now save the editted form.")
+        saveEditedTask(projectIndex, taskIndex);
+    };
+
+    formEl.querySelector('.cancel-task-btn').addEventListener('click', () => {
+        form.remove();
+    });
+}
+
+function setUpEditTaskListener() {
+    document.getElementById('right-side').addEventListener('click', (event) => {
+        const editBtn = event.target.closest('.edit-btn');
+        if (!editBtn) return;
+
+        const taskCard = editBtn.closest('.task-card');
+        const taskIndex = parseInt(taskCard.dataset.index);
+        const projectIndex = parseInt(document.querySelector('.project.active').dataset.index);
+
+        // Fetch the task data
+        const tasks = ProjectManager.getProjectTasks(projectIndex);
+        const taskToEdit = tasks[taskIndex];
+
+        // Populate the form with task data
+        console.log("Edit form will now pop up!");
+        showEditForm(projectIndex, taskIndex, taskToEdit);
+    });
+}
 function initializeApp() {
     ProjectManager.loadProjects();
     renderAllProjects();
-    
+
     // Set up listeners IN THIS ORDER:
     setUpAddProjectsListener();
     setUpDeleteProjectListener();
     switchProjectListener(); 
     setUpAddTaskForm();
     setUpDeleteTaskListener(); // Should come last
-    
+    setUpEditTaskListener();
+
     // Activate first project if exists
     if (ProjectManager.getProjectsArr().length > 0) {
         document.querySelector('.project')?.classList.add('active');

@@ -24,10 +24,13 @@ class Project {
         return this.tasks;
     }
 
-    updateTask(taskIndex, updatedData) {
+    updateTask(taskIndex, updatedFields) {
         if (taskIndex >= 0 && taskIndex < this.tasks.length) {
+            console.log("Now in Project.js !");
             this.tasks[taskIndex].update(updatedFields); // Delegates to Task.js
+            return true;
         }
+        
     }
 
     static fromJSON(data) {

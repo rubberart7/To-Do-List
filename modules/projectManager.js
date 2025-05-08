@@ -1,4 +1,5 @@
 import Project from './Project.js';
+import Task from './Task.js';
 
 const ProjectManager = (() => {
     let projectsArr = [];
@@ -23,15 +24,22 @@ const ProjectManager = (() => {
         return localStorage.getItem('projects');
     }
 
-    // Loads and converts projects from localStorage
     function getProjsFromLs() {
         const storedProjects = getJsonVerOfProj();
         if (storedProjects) {
             try {
                 const parsed = JSON.parse(storedProjects);
                 return parsed.map(projectData => {
+                    // Reconstruct Project
                     const project = new Project(projectData.name);
-                    project.tasks = projectData.tasks || [];
+                    // Reconstruct Tasks
+                    project.tasks = projectData.tasks.map(task => new Task(
+                        task.title,
+                        task.description,
+                        task.dueDate,
+                        task.priority,
+                        task.status
+                    ));
                     return project;
                 });
             } catch (e) {
@@ -95,8 +103,10 @@ const ProjectManager = (() => {
         if (index >= 0 && index < projectsArr.length) {
             projectsArr.splice(index, 1);
             addProjectToLs();
+            return true;
         }
         console.error("Invalid project index:", index);
+        return false;
     }
 
     function addTaskToProject(projectIndex, title, description, dueDate, priority, status = 'Incomplete') {
@@ -109,8 +119,10 @@ const ProjectManager = (() => {
             const project = projectsArr[projectIndex];
             project.addTask(title, description, dueDate, priority, status);
             addProjectToLs();
+            return true;
         } catch (error) {
             console.error("Failed to add task:", error);
+            return false;
         }
     }
 
@@ -127,26 +139,32 @@ const ProjectManager = (() => {
     function removeTask(projectIndex, taskIndex) {
         if (projectIndex < 0 || projectIndex >= projectsArr.length) {
             console.error("Invalid project index:", projectIndex);
+            return false;
         }
         
         const project = projectsArr[projectIndex];
         if (taskIndex < 0 || taskIndex >= project.tasks.length) {
             console.error("Invalid task index:", taskIndex);
+            return false;
         }
     
         project.tasks.splice(taskIndex, 1);
         addProjectToLs();
+        return true;
     }
 
     function updateTask(projectIndex, taskIndex, updatedTaskData) {
         try {
+            console.log("Now inside projectManager.js methopd for editting task!");
             const project = projectsArr[projectIndex];
             if (!project) throw new Error('Project not found');
             
             const success = project.updateTask(taskIndex, updatedTaskData);
             if (success) addProjectToLs();
+            return true;
         } catch (error) {
             console.error('Update failed:', error.message);
+            return false;
         }
     }
 
